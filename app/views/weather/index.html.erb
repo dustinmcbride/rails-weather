@@ -1,0 +1,49 @@
+<h1>Weather</h1>
+
+<%= form_with url: "/weather" do |form| %>
+  <%= form.label :query, "🔎" %>
+  <%= form.text_field :location, placeholder: " Search by zip code" %>
+  <%= form.submit "Search" %>
+<% end %>
+
+<% if @error.present? %>
+  <p style="color: red"> Uh oh, <%= @error[:message] %> </p>
+<% end %>
+
+
+<% if @error.nil? && @weather.present? %>
+  <h2>Today in <%= @weather[:location][:name] %></h2>
+  <img src="<%= @weather[:current][:condition_icon] %>" />
+  <ul>
+    <li>Current:  <%= @weather[:current][:temp_f] %></li>
+    <li>High: <%= @weather[:current][:maxtemp_f] %></li>
+    <li>Low:  <%= @weather[:current][:mintemp_f] %></li>
+  </ul>
+
+  <h2>Forcast</h2>
+  <table>
+    <thead>
+        <tr>
+          <% @weather[:forcast_days].each do |day| %>                    
+              <th style="width: 150px; text-align: left;"><%= day[:date] %></th>
+          <% end %>
+        </tr>
+    </thead>
+    <tbody>
+      <% @weather[:forcast_days].each do |day| %>                    
+        <td>
+          <img src="<%= day[:condition_icon] %>" />
+          <ul>
+            <li>High: <%= day[:maxtemp_f] %></li>
+            <li>Low:  <%= day[:mintemp_f] %></li>
+          </ul>
+        </td>
+      <% end %>
+    </tbody>  
+  </table>
+
+  <% if @weather[:is_from_cache] %>
+   <i> 💸 This result was retrived from the cache</i>
+  <% end %>
+
+<% end %>
